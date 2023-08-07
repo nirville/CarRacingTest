@@ -16,12 +16,20 @@ public class CarController : MonoBehaviour
 
     public float maxSteerAngle = 30;
     public float motorForce = 50;
+    public float brakeForce = 10;
+
+    private bool isBraking = false;
 
 
     public void GetInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            isBraking = true;
+        else if (Input.GetKeyUp(KeyCode.Space))
+            isBraking = false;
     }
 
     public void Steer()
@@ -35,7 +43,20 @@ public class CarController : MonoBehaviour
     {
         LeftFront_WC.motorTorque = verticalInput * motorForce;
         rightFront_WC.motorTorque = verticalInput * motorForce;
+        //LeftRear_WC.motorTorque = verticalInput * motorForce;
+        //rightRear_WC.motorTorque = verticalInput * motorForce;
     }
+
+    public void Braking()
+    {
+         var brakeConstant = isBraking ? 100 : 0;
+
+        LeftFront_WC.brakeTorque = brakeConstant * brakeForce;
+        rightFront_WC.brakeTorque = brakeConstant * brakeForce;
+        LeftRear_WC.brakeTorque = brakeConstant * brakeForce;
+        rightRear_WC.brakeTorque = brakeConstant * brakeForce;
+    }    
+
 
     private void UpdateWheelPoses()
     {
@@ -54,11 +75,16 @@ public class CarController : MonoBehaviour
         transform.rotation = rot;
     }
 
-    void FixedUpdate()
+    private void Update()
     {
         GetInput();
+    }
+
+    void FixedUpdate()
+    {
         Steer();
         Accelerate();
+        Braking();
         UpdateWheelPoses();
     }
 }

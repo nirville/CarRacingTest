@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 
-
 namespace Nirville.CarTestGame
 {
     public class GameManager : MonoBehaviour

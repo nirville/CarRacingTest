@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Nirville.CarTestGame
+{
 public class CarController : MonoBehaviour
 {
     private float horizontalInput;
@@ -10,6 +12,7 @@ public class CarController : MonoBehaviour
 
     public WheelCollider LeftFront_WC, LeftRear_WC;
     public WheelCollider rightFront_WC, rightRear_WC;
+    public Rigidbody carRigidbody;
 
     public Transform LeftFront_T, LeftRear_T;
     public Transform rightFront_T, rightRear_T;
@@ -19,6 +22,8 @@ public class CarController : MonoBehaviour
     public float brakeForce = 10;
 
     private bool isBraking = false;
+
+    public float CarSpeed => carRigidbody.velocity.magnitude;
 
 
     public void GetInput()
@@ -78,6 +83,7 @@ public class CarController : MonoBehaviour
     private void Update()
     {
         GetInput();
+        CalculateDrift();
     }
 
     void FixedUpdate()
@@ -87,4 +93,29 @@ public class CarController : MonoBehaviour
         Braking();
         UpdateWheelPoses();
     }
+
+    internal float driftScore;
+    internal bool isDrifting;
+
+    private void CalculateDrift()
+    {
+        Debug.DrawRay(transform.position, carRigidbody.velocity * 5, Color.red);
+        Debug.DrawRay(transform.position, transform.forward * 5, Color.blue);
+
+        Vector3 facing = carRigidbody.rotation * Vector3.forward;
+        Vector3 velocity = carRigidbody.velocity;
+
+        float angleDifference = Vector3.Angle(facing, velocity);
+
+        if (angleDifference > 20 && carRigidbody.velocity.magnitude > 10)
+        {
+            isDrifting = true;
+            driftScore += 0.05f;
+        }
+        else
+        {
+            isDrifting = false;
+        }
+    }
+}
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Nirville.CarTestGame
@@ -15,7 +13,6 @@ namespace Nirville.CarTestGame
 
         void SwitchCamera()
         {
-            Debug.Log("Switched");
             if(TPSCam.activeInHierarchy)
             {
                 TPSCam.SetActive(false);
